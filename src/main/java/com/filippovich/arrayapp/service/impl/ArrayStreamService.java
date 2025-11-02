@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 public class ArrayStreamService implements ArrayService {
     private static final Logger logger = LogManager.getLogger(ArrayStreamService.class);
@@ -18,13 +19,8 @@ public class ArrayStreamService implements ArrayService {
     public String findShortestWord(StringArray array) {
         logger.debug("Finding shortest word using Stream API in array: {}", array);
 
-        // Создаем временный StringArray для каждого слова и используем компаратор по длине
         String result = Arrays.stream(array.getArray())
-                .min((s1, s2) -> {
-                    StringArray arr1 = new StringArray(new String[]{s1});
-                    StringArray arr2 = new StringArray(new String[]{s2});
-                    return comparator.byLength().compare(arr1, arr2);
-                })
+                .min(Comparator.comparingInt(String::length))
                 .orElse("");
 
         logger.debug("Shortest word found: '{}'", result);
@@ -36,11 +32,7 @@ public class ArrayStreamService implements ArrayService {
         logger.debug("Finding longest word using Stream API in array: {}", array);
 
         String result = Arrays.stream(array.getArray())
-                .max((s1, s2) -> {
-                    StringArray arr1 = new StringArray(new String[]{s1});
-                    StringArray arr2 = new StringArray(new String[]{s2});
-                    return comparator.byLength().compare(arr1, arr2);
-                })
+                .max(Comparator.comparingInt(String::length))
                 .orElse("");
 
         logger.debug("Longest word found: '{}'", result);

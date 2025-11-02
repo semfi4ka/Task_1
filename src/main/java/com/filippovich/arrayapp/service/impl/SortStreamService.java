@@ -9,6 +9,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.stream.IntStream;
 
 public class SortStreamService implements SortService {
     private static final Logger logger = LogManager.getLogger(SortStreamService.class);
@@ -23,15 +25,21 @@ public class SortStreamService implements SortService {
             return array;
         }
 
-        String[] sorted = Arrays.stream(array.getArray())
-                .sorted((s1, s2) -> {
-                    StringArray arr1 = new StringArray(new String[]{s1});
-                    StringArray arr2 = new StringArray(new String[]{s2});
-                    return comparator.byLength().compare(arr1, arr2);
-                })
-                .toArray(String[]::new);
+        String[] arr = array.getArray().clone();
+        int n = arr.length;
 
-        StringArray result = ArrayFactory.createFromArray(sorted);
+        // Bubble sort через Stream API
+        IntStream.range(0, n - 1)
+                .forEach(i -> IntStream.range(0, n - i - 1)
+                        .forEach(j -> {
+                            if (arr[j].length() > arr[j + 1].length()) {
+                                String temp = arr[j];
+                                arr[j] = arr[j + 1];
+                                arr[j + 1] = temp;
+                            }
+                        }));
+
+        StringArray result = ArrayFactory.createFromArray(arr);
         logger.debug("Stream bubble sorted by length: {}", result);
         return result;
     }
@@ -45,16 +53,23 @@ public class SortStreamService implements SortService {
             return array;
         }
 
-        String[] sorted = Arrays.stream(array.getArray())
-                .parallel()
-                .sorted((s1, s2) -> {
-                    StringArray arr1 = new StringArray(new String[]{s1});
-                    StringArray arr2 = new StringArray(new String[]{s2});
-                    return comparator.byLength().compare(arr1, arr2);
-                })
-                .toArray(String[]::new);
+        String[] arr = array.getArray().clone();
+        int n = arr.length;
 
-        StringArray result = ArrayFactory.createFromArray(sorted);
+        // Selection sort через Stream API
+        IntStream.range(0, n - 1)
+                .forEach(i -> {
+                    final int currentI = i;
+                    int minIndex = IntStream.range(currentI, n)
+                            .reduce(currentI, (min, j) ->
+                                    arr[j].length() < arr[min].length() ? j : min);
+
+                    String temp = arr[minIndex];
+                    arr[minIndex] = arr[currentI];
+                    arr[currentI] = temp;
+                });
+
+        StringArray result = ArrayFactory.createFromArray(arr);
         logger.debug("Stream selection sorted by length: {}", result);
         return result;
     }
@@ -69,17 +84,8 @@ public class SortStreamService implements SortService {
         }
 
         String[] sorted = Arrays.stream(array.getArray())
-                .parallel()
-                .sorted((s1, s2) -> {
-                    StringArray arr1 = new StringArray(new String[]{s1});
-                    StringArray arr2 = new StringArray(new String[]{s2});
-                    int lengthCompare = comparator.byLength().compare(arr1, arr2);
-                    if (lengthCompare != 0) {
-                        return lengthCompare;
-                    }
-                    // Если длины равны, сравниваем по алфавиту
-                    return comparator.byFirstElement().compare(arr1, arr2);
-                })
+                .sorted(Comparator.comparingInt(String::length)
+                        .thenComparing(Comparator.naturalOrder())) // для стабильности при одинаковой длине
                 .toArray(String[]::new);
 
         StringArray result = ArrayFactory.createFromArray(sorted);
@@ -92,17 +98,14 @@ public class SortStreamService implements SortService {
         logger.debug("Quick sort by length for array portion [{}, {}]", low, high);
 
         if (low < high) {
+            // Создаем временный массив для сортировки части
             String[] subArray = Arrays.copyOfRange(arr, low, high + 1);
 
-            // Используем компаратор для сортировки подмассива
             String[] sortedSubArray = Arrays.stream(subArray)
-                    .sorted((s1, s2) -> {
-                        StringArray arr1 = new StringArray(new String[]{s1});
-                        StringArray arr2 = new StringArray(new String[]{s2});
-                        return comparator.byLength().compare(arr1, arr2);
-                    })
+                    .sorted(Comparator.comparingInt(String::length))
                     .toArray(String[]::new);
 
+            // Копируем отсортированную часть обратно
             System.arraycopy(sortedSubArray, 0, arr, low, sortedSubArray.length);
         }
     }
@@ -114,16 +117,19 @@ public class SortStreamService implements SortService {
         String pivot = arr[high];
         int pivotLength = pivot.length();
 
-        // Используем компаратор для подсчета элементов
-        long countLessOrEqual = Arrays.stream(arr, low, high)
-                .filter(word -> {
-                    StringArray wordArray = new StringArray(new String[]{word});
-                    StringArray pivotArray = new StringArray(new String[]{pivot});
-                    return comparator.byLength().compare(wordArray, pivotArray) <= 0;
-                })
-                .count();
+        String[] lessOrEqual = Arrays.stream(arr, low, high)
+                .filter(word -> word.length() <= pivotLength)
+                .toArray(String[]::new);
 
-        return low + (int) countLessOrEqual - 1;
+        String[] greater = Arrays.stream(arr, low, high)
+                .filter(word -> word.length() > pivotLength)
+                .toArray(String[]::new);
+
+        System.arraycopy(lessOrEqual, 0, arr, low, lessOrEqual.length);
+        arr[low + lessOrEqual.length] = pivot;
+        System.arraycopy(greater, 0, arr, low + lessOrEqual.length + 1, greater.length);
+
+        return low + lessOrEqual.length;
     }
 
     @Override
@@ -136,11 +142,7 @@ public class SortStreamService implements SortService {
         }
 
         String[] sorted = Arrays.stream(array.getArray())
-                .sorted((s1, s2) -> {
-                    StringArray arr1 = new StringArray(new String[]{s1});
-                    StringArray arr2 = new StringArray(new String[]{s2});
-                    return comparator.byFirstElement().compare(arr1, arr2);
-                })
+                .sorted(String.CASE_INSENSITIVE_ORDER)
                 .toArray(String[]::new);
 
         StringArray result = ArrayFactory.createFromArray(sorted);
@@ -158,11 +160,9 @@ public class SortStreamService implements SortService {
         }
 
         String[] sorted = Arrays.stream(array.getArray())
-                .sorted((s1, s2) -> {
-                    StringArray arr1 = new StringArray(new String[]{s1});
-                    StringArray arr2 = new StringArray(new String[]{s2});
-                    return comparator.byLength().compare(arr2, arr1); // Обратный порядок
-                })
+                .sorted(Comparator.comparingInt(String::length)
+                        .reversed()
+                        .thenComparing(Comparator.naturalOrder()))
                 .toArray(String[]::new);
 
         StringArray result = ArrayFactory.createFromArray(sorted);
@@ -170,7 +170,7 @@ public class SortStreamService implements SortService {
         return result;
     }
 
-    // Дополнительные методы с использованием других компараторов
+    // Дополнительные методы с использованием Stream API
     public StringArray sortByLastElement(StringArray array) throws InvalidArrayException {
         logger.debug("Stream sort by last element: {}", array);
 
@@ -181,9 +181,9 @@ public class SortStreamService implements SortService {
 
         String[] sorted = Arrays.stream(array.getArray())
                 .sorted((s1, s2) -> {
-                    StringArray arr1 = new StringArray(new String[]{s1});
-                    StringArray arr2 = new StringArray(new String[]{s2});
-                    return comparator.byLastElement().compare(arr1, arr2);
+                    char last1 = s1.isEmpty() ? ' ' : s1.charAt(s1.length() - 1);
+                    char last2 = s2.isEmpty() ? ' ' : s2.charAt(s2.length() - 1);
+                    return Character.compare(last1, last2);
                 })
                 .toArray(String[]::new);
 
@@ -201,15 +201,80 @@ public class SortStreamService implements SortService {
         }
 
         String[] sorted = Arrays.stream(array.getArray())
-                .sorted((s1, s2) -> {
-                    StringArray arr1 = new StringArray(new String[]{s1});
-                    StringArray arr2 = new StringArray(new String[]{s2});
-                    return comparator.byAlphabeticalOrder().compare(arr1, arr2);
-                })
+                .sorted(Comparator.naturalOrder())
                 .toArray(String[]::new);
 
         StringArray result = ArrayFactory.createFromArray(sorted);
         logger.debug("Stream sorted by alphabetical order: {}", result);
+        return result;
+    }
+
+    // Дополнительные полезные методы через Stream API
+    public StringArray sortByVowelCount(StringArray array) throws InvalidArrayException {
+        logger.debug("Stream sort by vowel count: {}", array);
+
+        if (array.isEmpty()) {
+            logger.debug("Empty array - nothing to sort");
+            return array;
+        }
+
+        String[] sorted = Arrays.stream(array.getArray())
+                .sorted(Comparator.comparingInt(this::countVowels)
+                        .thenComparing(Comparator.naturalOrder()))
+                .toArray(String[]::new);
+
+        StringArray result = ArrayFactory.createFromArray(sorted);
+        logger.debug("Stream sorted by vowel count: {}", result);
+        return result;
+    }
+
+    public StringArray sortByConsonantCount(StringArray array) throws InvalidArrayException {
+        logger.debug("Stream sort by consonant count: {}", array);
+
+        if (array.isEmpty()) {
+            logger.debug("Empty array - nothing to sort");
+            return array;
+        }
+
+        String[] sorted = Arrays.stream(array.getArray())
+                .sorted(Comparator.comparingInt(this::countConsonants)
+                        .thenComparing(Comparator.naturalOrder()))
+                .toArray(String[]::new);
+
+        StringArray result = ArrayFactory.createFromArray(sorted);
+        logger.debug("Stream sorted by consonant count: {}", result);
+        return result;
+    }
+
+    // Вспомогательные методы
+    private int countVowels(String word) {
+        return (int) word.toLowerCase().chars()
+                .filter(c -> "aeiouаеёиоуыэюя".indexOf(c) != -1)
+                .count();
+    }
+
+    private int countConsonants(String word) {
+        return (int) word.toLowerCase().chars()
+                .filter(c -> Character.isLetter(c) && "aeiouаеёиоуыэюя".indexOf(c) == -1)
+                .count();
+    }
+
+    // Метод для сортировки с кастомным компаратором
+    public StringArray sortWithCustomComparator(StringArray array,
+                                                Comparator<String> customComparator) throws InvalidArrayException {
+        logger.debug("Stream sort with custom comparator: {}", array);
+
+        if (array.isEmpty()) {
+            logger.debug("Empty array - nothing to sort");
+            return array;
+        }
+
+        String[] sorted = Arrays.stream(array.getArray())
+                .sorted(customComparator)
+                .toArray(String[]::new);
+
+        StringArray result = ArrayFactory.createFromArray(sorted);
+        logger.debug("Stream sorted with custom comparator: {}", result);
         return result;
     }
 }
