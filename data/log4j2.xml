@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+    <Appenders>
+        <!-- Console Appender -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %c{1} - %msg%n"/>
+        </Console>
+
+        <!-- File Appender -->
+        <RollingFile name="FileAppender"
+                     fileName="logs/array-app.log"
+                     filePattern="logs/array-app-%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %c{1} - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+        </RollingFile>
+
+        <!-- Async Appender для производительности -->
+        <Async name="AsyncFile" bufferSize="1024">
+            <AppenderRef ref="FileAppender"/>
+        </Async>
+    </Appenders>
+
+    <Loggers>
+        <!-- Наше приложение - DEBUG уровень -->
+        <Logger name="com.filippovich.arrayapp" level="DEBUG" additivity="false">
+            <AppenderRef ref="Console" level="INFO"/>
+            <AppenderRef ref="AsyncFile" level="DEBUG"/>
+        </Logger>
+
+        <!-- Только ошибки для сторонних библиотек -->
+        <Logger name="org.apache" level="WARN"/>
+        <Logger name="com" level="WARN"/>
+
+        <!-- Root logger -->
+        <Root level="INFO">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>
