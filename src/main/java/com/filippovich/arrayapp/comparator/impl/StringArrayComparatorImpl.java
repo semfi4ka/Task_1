@@ -48,7 +48,6 @@ public class StringArrayComparatorImpl implements StringArrayComparator {
     @Override
     public Comparator<StringArray> byAlphabeticalOrder() {
         return (arr1, arr2) -> {
-            // Сравниваем массивы по первому различному элементу
             int minLength = Math.min(arr1.length(), arr2.length());
             for (int i = 0; i < minLength; i++) {
                 int comparison = arr1.getArray()[i].compareToIgnoreCase(arr2.getArray()[i]);
