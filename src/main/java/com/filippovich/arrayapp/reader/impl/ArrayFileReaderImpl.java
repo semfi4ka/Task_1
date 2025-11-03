@@ -18,12 +18,10 @@ public class ArrayFileReaderImpl implements ArrayFileReader {
     private final String filePath;
     private List<String> cachedLines;
 
-    // Конструктор по умолчанию использует путь по умолчанию
     public ArrayFileReaderImpl() {
         this(DEFAULT_FILE_PATH);
     }
 
-    // Конструктор для тестов с кастомным путем
     public ArrayFileReaderImpl(String filePath) {
         this.filePath = filePath;
         this.cachedLines = null;
@@ -65,7 +63,6 @@ public class ArrayFileReaderImpl implements ArrayFileReader {
         return validLines;
     }
 
-    // processLine и printFileStatistics методы остаются без изменений...
     private boolean processLine(String line, int lineNumber, List<String> validLines, ArrayValidatorImpl validator) {
         try {
             if (line == null || line.isBlank()) {
