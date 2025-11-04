@@ -43,10 +43,10 @@ class StringArrayComparatorTest {
     void testByLength() {
         Comparator<StringArray> lengthComparator = comparator.byLength();
 
-        assertTrue(lengthComparator.compare(array1, array2) > 0); // 3 > 2
-        assertTrue(lengthComparator.compare(array2, array3) < 0); // 2 < 3
-        assertEquals(0, lengthComparator.compare(array1, array3)); // 3 == 3
-        assertTrue(lengthComparator.compare(emptyArray, array1) < 0); // 0 < 3
+        assertTrue(lengthComparator.compare(array1, array2) > 0);
+        assertTrue(lengthComparator.compare(array2, array3) < 0);
+        assertEquals(0, lengthComparator.compare(array1, array3));
+        assertTrue(lengthComparator.compare(emptyArray, array1) < 0);
         assertEquals(0, lengthComparator.compare(array1, array1));
     }
 
@@ -54,8 +54,8 @@ class StringArrayComparatorTest {
     void testByFirstElement() {
         Comparator<StringArray> firstElementComparator = comparator.byFirstElement();
 
-        assertTrue(firstElementComparator.compare(array1, array2) < 0); // "apple" < "date"
-        assertTrue(firstElementComparator.compare(array2, array1) > 0); // "date" > "apple"
+        assertTrue(firstElementComparator.compare(array1, array2) < 0);
+        assertTrue(firstElementComparator.compare(array2, array1) > 0);
         assertEquals(0, firstElementComparator.compare(array1, array1));
 
         assertTrue(firstElementComparator.compare(emptyArray, array1) < 0);
@@ -67,9 +67,9 @@ class StringArrayComparatorTest {
     void testByLastElement() {
         Comparator<StringArray> lastElementComparator = comparator.byLastElement();
 
-        assertTrue(lastElementComparator.compare(array1, array2) < 0); // "cherry" < "elderberry"
-        assertTrue(lastElementComparator.compare(array2, array1) > 0); // "elderberry" > "cherry"
-        assertTrue(lastElementComparator.compare(array1, array3) < 0); // "cherry" < "date"
+        assertTrue(lastElementComparator.compare(array1, array2) < 0);
+        assertTrue(lastElementComparator.compare(array2, array1) > 0);
+        assertTrue(lastElementComparator.compare(array1, array3) < 0);
         assertEquals(0, lastElementComparator.compare(array1, array1));
 
         assertTrue(lastElementComparator.compare(emptyArray, array1) < 0);
@@ -83,16 +83,16 @@ class StringArrayComparatorTest {
         StringArray arrayA = new StringArray(new String[]{"apple", "banana", "cherry"});
         StringArray arrayB = new StringArray(new String[]{"apple", "banana", "date"});
 
-        assertTrue(alphabeticalComparator.compare(arrayA, arrayB) < 0); // "cherry" < "date"
-        assertTrue(alphabeticalComparator.compare(arrayB, arrayA) > 0); // "date" > "cherry"
+        assertTrue(alphabeticalComparator.compare(arrayA, arrayB) < 0);
+        assertTrue(alphabeticalComparator.compare(arrayB, arrayA) > 0);
 
-        assertTrue(alphabeticalComparator.compare(array1, array2) < 0); // "apple" < "date"
+        assertTrue(alphabeticalComparator.compare(array1, array2) < 0);
 
         StringArray shortArray = new StringArray(new String[]{"apple", "banana"});
         StringArray longArray = new StringArray(new String[]{"apple", "banana", "cherry"});
 
-        assertTrue(alphabeticalComparator.compare(shortArray, longArray) < 0); // shorter comes first
-        assertTrue(alphabeticalComparator.compare(longArray, shortArray) > 0); // longer comes after
+        assertTrue(alphabeticalComparator.compare(shortArray, longArray) < 0);
+        assertTrue(alphabeticalComparator.compare(longArray, shortArray) > 0);
 
         StringArray lowerCase = new StringArray(new String[]{"APPLE", "BANANA"});
         StringArray upperCase = new StringArray(new String[]{"apple", "banana"});

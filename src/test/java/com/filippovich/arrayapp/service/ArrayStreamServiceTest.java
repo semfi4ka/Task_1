@@ -59,22 +59,22 @@ public class ArrayStreamServiceTest {
 
     @Test
     public void testCountWordsLongerThan() {
-        assertEquals(3, arrayService.countWordsLongerThan(testArray, 5)); // banana, cherry, elephant
-        assertEquals(1, arrayService.countWordsLongerThan(testArray, 7)); // elephant
-        assertEquals(0, arrayService.countWordsLongerThan(testArray, 10)); // none
+        assertEquals(3, arrayService.countWordsLongerThan(testArray, 5));
+        assertEquals(1, arrayService.countWordsLongerThan(testArray, 7));
+        assertEquals(0, arrayService.countWordsLongerThan(testArray, 10));
         assertEquals(0, arrayService.countWordsLongerThan(emptyArray, 5));
-        assertEquals(1, arrayService.countWordsLongerThan(singleElementArray, 5)); // "single" has 6 chars
-        assertEquals(0, arrayService.countWordsLongerThan(singleElementArray, 6)); // exactly 6 chars
+        assertEquals(1, arrayService.countWordsLongerThan(singleElementArray, 5));
+        assertEquals(0, arrayService.countWordsLongerThan(singleElementArray, 6));
     }
 
     @Test
     public void testCountWordsShorterThan() {
-        assertEquals(2, arrayService.countWordsShorterThan(testArray, 5)); // date, fig, grape
-        assertEquals(1, arrayService.countWordsShorterThan(testArray, 4)); // fig
-        assertEquals(0, arrayService.countWordsShorterThan(testArray, 3)); // none
+        assertEquals(2, arrayService.countWordsShorterThan(testArray, 5));
+        assertEquals(1, arrayService.countWordsShorterThan(testArray, 4));
+        assertEquals(0, arrayService.countWordsShorterThan(testArray, 3));
         assertEquals(0, arrayService.countWordsShorterThan(emptyArray, 5));
-        assertEquals(0, arrayService.countWordsShorterThan(singleElementArray, 6)); // exactly 6 chars
-        assertEquals(1, arrayService.countWordsShorterThan(singleElementArray, 7)); // "single" has 6 chars
+        assertEquals(0, arrayService.countWordsShorterThan(singleElementArray, 6));
+        assertEquals(1, arrayService.countWordsShorterThan(singleElementArray, 7));
     }
 
     @Test
@@ -144,13 +144,13 @@ public class ArrayStreamServiceTest {
 
     @Test
     public void testCountWordsStartingWith() {
-        assertEquals(1, arrayService.countWordsStartingWith(testArray, 'a')); // apple
-        assertEquals(1, arrayService.countWordsStartingWith(testArray, 'b')); // banana
-        assertEquals(1, arrayService.countWordsStartingWith(testArray, 'c')); // cherry
-        assertEquals(0, arrayService.countWordsStartingWith(testArray, 'x')); // none
+        assertEquals(1, arrayService.countWordsStartingWith(testArray, 'a'));
+        assertEquals(1, arrayService.countWordsStartingWith(testArray, 'b'));
+        assertEquals(1, arrayService.countWordsStartingWith(testArray, 'c'));
+        assertEquals(0, arrayService.countWordsStartingWith(testArray, 'x'));
 
-        assertEquals(1, arrayService.countWordsStartingWith(testArray, 'A')); // apple
-        assertEquals(1, arrayService.countWordsStartingWith(testArray, 'B')); // banana
+        assertEquals(1, arrayService.countWordsStartingWith(testArray, 'A'));
+        assertEquals(1, arrayService.countWordsStartingWith(testArray, 'B'));
 
         assertEquals(0, arrayService.countWordsStartingWith(emptyArray, 'a'));
 
@@ -160,16 +160,16 @@ public class ArrayStreamServiceTest {
 
     @Test
     public void testCountWordsEndingWith() {
-        assertEquals(3, arrayService.countWordsEndingWith(testArray, 'e')); // apple, date, grape
-        assertEquals(1, arrayService.countWordsEndingWith(testArray, 'a')); // banana
-        assertEquals(0, arrayService.countWordsEndingWith(testArray, 'x')); // none
+        assertEquals(3, arrayService.countWordsEndingWith(testArray, 'e'));
+        assertEquals(1, arrayService.countWordsEndingWith(testArray, 'a'));
+        assertEquals(0, arrayService.countWordsEndingWith(testArray, 'x'));
 
-        assertEquals(3, arrayService.countWordsEndingWith(testArray, 'E')); // apple, date, grape
-        assertEquals(1, arrayService.countWordsEndingWith(testArray, 'A')); // banana
+        assertEquals(3, arrayService.countWordsEndingWith(testArray, 'E'));
+        assertEquals(1, arrayService.countWordsEndingWith(testArray, 'A'));
 
         assertEquals(0, arrayService.countWordsEndingWith(emptyArray, 'a'));
 
-        assertEquals(1, arrayService.countWordsEndingWith(singleElementArray, 'e')); // single ends with 'e'
+        assertEquals(1, arrayService.countWordsEndingWith(singleElementArray, 'e'));
         assertEquals(0, arrayService.countWordsEndingWith(singleElementArray, 'x'));
     }
 

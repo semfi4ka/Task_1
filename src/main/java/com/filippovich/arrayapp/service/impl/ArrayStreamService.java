@@ -173,7 +173,6 @@ public class ArrayStreamService implements ArrayService {
         return (int) result;
     }
 
-    // Дополнительные методы с использованием компаратора для StringArray
     public StringArray sortById(StringArray array) throws InvalidArrayException {
         logger.debug("Sorting StringArray by ID using custom comparator: {}", array);
 

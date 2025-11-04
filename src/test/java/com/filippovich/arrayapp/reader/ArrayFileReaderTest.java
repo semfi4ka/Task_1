@@ -62,7 +62,6 @@ public class ArrayFileReaderTest {
 
     @Test
     public void testReadValidLinesFromFile_WithEmptyLines() throws Exception {
-        // Arrange
         String fileContent = "first,line\n" +
                 "\n" +
                 "third,line\n" +
@@ -92,7 +91,6 @@ public class ArrayFileReaderTest {
 
     @Test
     public void testReadValidLinesFromFile_WithMixedContent() throws Exception {
-        // Arrange
         String fileContent = "word1,word2\n" +
                 "single\n" +
                 "   \n" +

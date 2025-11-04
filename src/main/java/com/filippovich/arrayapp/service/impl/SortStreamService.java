@@ -28,7 +28,6 @@ public class SortStreamService implements SortService {
         String[] arr = array.getArray().clone();
         int n = arr.length;
 
-        // Bubble sort через Stream API
         IntStream.range(0, n - 1)
                 .forEach(i -> IntStream.range(0, n - i - 1)
                         .forEach(j -> {
@@ -56,7 +55,6 @@ public class SortStreamService implements SortService {
         String[] arr = array.getArray().clone();
         int n = arr.length;
 
-        // Selection sort через Stream API
         IntStream.range(0, n - 1)
                 .forEach(i -> {
                     final int currentI = i;
@@ -85,7 +83,7 @@ public class SortStreamService implements SortService {
 
         String[] sorted = Arrays.stream(array.getArray())
                 .sorted(Comparator.comparingInt(String::length)
-                        .thenComparing(Comparator.naturalOrder())) // для стабильности при одинаковой длине
+                        .thenComparing(Comparator.naturalOrder()))
                 .toArray(String[]::new);
 
         StringArray result = ArrayFactory.createFromArray(sorted);
@@ -98,14 +96,12 @@ public class SortStreamService implements SortService {
         logger.debug("Quick sort by length for array portion [{}, {}]", low, high);
 
         if (low < high) {
-            // Создаем временный массив для сортировки части
             String[] subArray = Arrays.copyOfRange(arr, low, high + 1);
 
             String[] sortedSubArray = Arrays.stream(subArray)
                     .sorted(Comparator.comparingInt(String::length))
                     .toArray(String[]::new);
 
-            // Копируем отсортированную часть обратно
             System.arraycopy(sortedSubArray, 0, arr, low, sortedSubArray.length);
         }
     }
@@ -170,7 +166,6 @@ public class SortStreamService implements SortService {
         return result;
     }
 
-    // Дополнительные методы с использованием Stream API
     public StringArray sortByLastElement(StringArray array) throws InvalidArrayException {
         logger.debug("Stream sort by last element: {}", array);
 
@@ -209,7 +204,6 @@ public class SortStreamService implements SortService {
         return result;
     }
 
-    // Дополнительные полезные методы через Stream API
     public StringArray sortByVowelCount(StringArray array) throws InvalidArrayException {
         logger.debug("Stream sort by vowel count: {}", array);
 
@@ -246,7 +240,6 @@ public class SortStreamService implements SortService {
         return result;
     }
 
-    // Вспомогательные методы
     private int countVowels(String word) {
         return (int) word.toLowerCase().chars()
                 .filter(c -> "aeiouаеёиоуыэюя".indexOf(c) != -1)
@@ -259,7 +252,6 @@ public class SortStreamService implements SortService {
                 .count();
     }
 
-    // Метод для сортировки с кастомным компаратором
     public StringArray sortWithCustomComparator(StringArray array,
                                                 Comparator<String> customComparator) throws InvalidArrayException {
         logger.debug("Stream sort with custom comparator: {}", array);

@@ -193,9 +193,9 @@ public class StringArrayRepositoryTest {
 
     @Test
     public void testQueryWithSpecification() {
-        repository.add(testArray1); // length 2
-        repository.add(testArray2); // length 3
-        repository.add(testArray3); // length 1
+        repository.add(testArray1);
+        repository.add(testArray2);
+        repository.add(testArray3);
 
         Specification spec = new TestSpecification(2);
         List<StringArray> result = repository.query(spec);

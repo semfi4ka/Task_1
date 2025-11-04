@@ -220,7 +220,7 @@ public class SortStreamServiceTest {
     public void testSortPerformance() throws InvalidArrayException {
         String[] largeArray = new String[100];
         for (int i = 0; i < largeArray.length; i++) {
-            largeArray[i] = "word" + (99 - i); // Reverse order
+            largeArray[i] = "word" + (99 - i);
         }
         StringArray largeStringArray = ArrayFactory.createFromArray(largeArray);
 
@@ -241,7 +241,7 @@ public class SortStreamServiceTest {
     @Test
     public void testSortStabilityCheck() throws InvalidArrayException {
         StringArray stableTestArray = ArrayFactory.createFromArray(new String[]{
-                "cat", "dog", "bat"  // All length 3
+                "cat", "dog", "bat"
         });
 
         StringArray result = sortService.sortByLengthBubble(stableTestArray);
@@ -258,7 +258,7 @@ public class SortStreamServiceTest {
         });
 
         StringArray result = sortService.sortByLengthBubble(arrayWithEmpty);
-        assertEquals("", result.getArray()[0]); // Empty string should be first
+        assertEquals("", result.getArray()[0]);
         assertEquals("a", result.getArray()[1]);
         assertEquals("hello", result.getArray()[2]);
         assertEquals("world", result.getArray()[3]);
