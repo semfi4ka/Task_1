@@ -2,7 +2,7 @@ package test.java.com.filippovich.arrayapp.warehouse;
 
 import com.filippovich.arrayapp.entity.StringArray;
 import com.filippovich.arrayapp.warehouse.impl.ArrayStatisticsImpl;
-import com.filippovich.arrayapp.warehouse.impl.Warehouse;
+import com.filippovich.arrayapp.warehouse.impl.ArrayWarehouse;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,16 +13,16 @@ import java.util.UUID;
 import static java.lang.Math.round;
 import static org.junit.jupiter.api.Assertions.*;
 
-class WarehouseTest {
+class ArrayWarehouseTest {
 
-    private Warehouse warehouse;
+    private ArrayWarehouse arrayWarehouse;
     private StringArray testArray;
     private StringArray emptyArray;
     private StringArray singleElementArray;
 
     @BeforeEach
     void setUp() {
-        warehouse = Warehouse.getInstance();
+        arrayWarehouse = ArrayWarehouse.getInstance();
         testArray = new StringArray(new String[]{"hello", "world", "test"});
         emptyArray = new StringArray(new String[]{});
         singleElementArray = new StringArray(new String[]{"single"});
@@ -30,22 +30,22 @@ class WarehouseTest {
 
     @AfterEach
     void tearDown() {
-        warehouse.clearStatistics();
+        arrayWarehouse.clearStatistics();
     }
 
     @Test
     void testGetInstance() {
-        assertNotNull(warehouse);
+        assertNotNull(arrayWarehouse);
 
-        Warehouse anotherInstance = Warehouse.getInstance();
-        assertSame(warehouse, anotherInstance);
+        ArrayWarehouse anotherInstance = ArrayWarehouse.getInstance();
+        assertSame(arrayWarehouse, anotherInstance);
     }
 
     @Test
     void testHandleEventAdd() {
-        warehouse.handleEvent(testArray, "ADD");
+        arrayWarehouse.handleEvent(testArray, "ADD");
 
-        Optional<ArrayStatisticsImpl> stats = warehouse.getStatistics(testArray.getId());
+        Optional<ArrayStatisticsImpl> stats = arrayWarehouse.getStatistics(testArray.getId());
         assertTrue(stats.isPresent());
 
         ArrayStatisticsImpl statistics = stats.get();
@@ -58,9 +58,9 @@ class WarehouseTest {
 
     @Test
     void testHandleEventAddEmptyArray() {
-        warehouse.handleEvent(emptyArray, "ADD");
+        arrayWarehouse.handleEvent(emptyArray, "ADD");
 
-        Optional<ArrayStatisticsImpl> stats = warehouse.getStatistics(emptyArray.getId());
+        Optional<ArrayStatisticsImpl> stats = arrayWarehouse.getStatistics(emptyArray.getId());
         assertTrue(stats.isPresent());
 
         ArrayStatisticsImpl statistics = stats.get();
@@ -73,9 +73,9 @@ class WarehouseTest {
 
     @Test
     void testHandleEventAddSingleElementArray() {
-        warehouse.handleEvent(singleElementArray, "ADD");
+        arrayWarehouse.handleEvent(singleElementArray, "ADD");
 
-        Optional<ArrayStatisticsImpl> stats = warehouse.getStatistics(singleElementArray.getId());
+        Optional<ArrayStatisticsImpl> stats = arrayWarehouse.getStatistics(singleElementArray.getId());
         assertTrue(stats.isPresent());
 
         ArrayStatisticsImpl statistics = stats.get();
@@ -88,11 +88,11 @@ class WarehouseTest {
 
     @Test
     void testHandleEventRemove() {
-        warehouse.handleEvent(testArray, "ADD");
-        assertTrue(warehouse.getStatistics(testArray.getId()).isPresent());
+        arrayWarehouse.handleEvent(testArray, "ADD");
+        assertTrue(arrayWarehouse.getStatistics(testArray.getId()).isPresent());
 
-        warehouse.handleEvent(testArray, "REMOVE");
-        assertFalse(warehouse.getStatistics(testArray.getId()).isPresent());
+        arrayWarehouse.handleEvent(testArray, "REMOVE");
+        assertFalse(arrayWarehouse.getStatistics(testArray.getId()).isPresent());
     }
 
     @Test
@@ -100,45 +100,45 @@ class WarehouseTest {
         UUID nonExistentId = UUID.randomUUID();
         StringArray nonExistentArray = new StringArray(new String[]{"test"});
 
-        assertDoesNotThrow(() -> warehouse.handleEvent(nonExistentArray, "REMOVE"));
+        assertDoesNotThrow(() -> arrayWarehouse.handleEvent(nonExistentArray, "REMOVE"));
     }
 
     @Test
     void testHandleEventUnknownEventType() {
-        warehouse.handleEvent(testArray, "UNKNOWN_EVENT");
+        arrayWarehouse.handleEvent(testArray, "UNKNOWN_EVENT");
 
-        assertFalse(warehouse.getStatistics(testArray.getId()).isPresent());
+        assertFalse(arrayWarehouse.getStatistics(testArray.getId()).isPresent());
     }
 
     @Test
     void testHandleEventNullArray() {
-        assertDoesNotThrow(() -> warehouse.handleEvent(null, "ADD"));
-        assertDoesNotThrow(() -> warehouse.handleEvent(null, "REMOVE"));
+        assertDoesNotThrow(() -> arrayWarehouse.handleEvent(null, "ADD"));
+        assertDoesNotThrow(() -> arrayWarehouse.handleEvent(null, "REMOVE"));
     }
 
     @Test
     void testGetStatisticsNonExistent() {
         UUID nonExistentId = UUID.randomUUID();
-        Optional<ArrayStatisticsImpl> stats = warehouse.getStatistics(nonExistentId);
+        Optional<ArrayStatisticsImpl> stats = arrayWarehouse.getStatistics(nonExistentId);
 
         assertFalse(stats.isPresent());
     }
 
     @Test
     void testClearStatistics() {
-        warehouse.handleEvent(testArray, "ADD");
-        warehouse.handleEvent(emptyArray, "ADD");
-        warehouse.handleEvent(singleElementArray, "ADD");
+        arrayWarehouse.handleEvent(testArray, "ADD");
+        arrayWarehouse.handleEvent(emptyArray, "ADD");
+        arrayWarehouse.handleEvent(singleElementArray, "ADD");
 
-        assertTrue(warehouse.getStatistics(testArray.getId()).isPresent());
-        assertTrue(warehouse.getStatistics(emptyArray.getId()).isPresent());
-        assertTrue(warehouse.getStatistics(singleElementArray.getId()).isPresent());
+        assertTrue(arrayWarehouse.getStatistics(testArray.getId()).isPresent());
+        assertTrue(arrayWarehouse.getStatistics(emptyArray.getId()).isPresent());
+        assertTrue(arrayWarehouse.getStatistics(singleElementArray.getId()).isPresent());
 
-        warehouse.clearStatistics();
+        arrayWarehouse.clearStatistics();
 
-        assertFalse(warehouse.getStatistics(testArray.getId()).isPresent());
-        assertFalse(warehouse.getStatistics(emptyArray.getId()).isPresent());
-        assertFalse(warehouse.getStatistics(singleElementArray.getId()).isPresent());
+        assertFalse(arrayWarehouse.getStatistics(testArray.getId()).isPresent());
+        assertFalse(arrayWarehouse.getStatistics(emptyArray.getId()).isPresent());
+        assertFalse(arrayWarehouse.getStatistics(singleElementArray.getId()).isPresent());
     }
 
     @Test
@@ -146,10 +146,10 @@ class WarehouseTest {
         StringArray array1 = new StringArray(new String[]{"a", "bb", "ccc"});
         StringArray array2 = new StringArray(new String[]{"xxxx", "yyyyy"});
 
-        warehouse.handleEvent(array1, "ADD");
-        warehouse.handleEvent(array2, "ADD");
+        arrayWarehouse.handleEvent(array1, "ADD");
+        arrayWarehouse.handleEvent(array2, "ADD");
 
-        Optional<ArrayStatisticsImpl> stats1 = warehouse.getStatistics(array1.getId());
+        Optional<ArrayStatisticsImpl> stats1 = arrayWarehouse.getStatistics(array1.getId());
         assertTrue(stats1.isPresent());
         assertEquals(2.0, stats1.get().getAverageLength(), 0.001);
         assertEquals(6, stats1.get().getTotalCharacters());
@@ -157,7 +157,7 @@ class WarehouseTest {
         assertEquals(1, stats1.get().getMinLength());
         assertEquals(3, stats1.get().getWordCount());
 
-        Optional<ArrayStatisticsImpl> stats2 = warehouse.getStatistics(array2.getId());
+        Optional<ArrayStatisticsImpl> stats2 = arrayWarehouse.getStatistics(array2.getId());
         assertTrue(stats2.isPresent());
         assertEquals(4.5, stats2.get().getAverageLength(), 0.001);
         assertEquals(9, stats2.get().getTotalCharacters());
@@ -170,9 +170,9 @@ class WarehouseTest {
     void testStatisticsWithDifferentStringLengths() {
         StringArray variedArray = new StringArray(new String[]{"", "a", "12345", "abcdefghij"});
 
-        warehouse.handleEvent(variedArray, "ADD");
+        arrayWarehouse.handleEvent(variedArray, "ADD");
 
-        Optional<ArrayStatisticsImpl> stats = warehouse.getStatistics(variedArray.getId());
+        Optional<ArrayStatisticsImpl> stats = arrayWarehouse.getStatistics(variedArray.getId());
         assertTrue(stats.isPresent());
 
         ArrayStatisticsImpl statistics = stats.get();
@@ -187,13 +187,13 @@ class WarehouseTest {
     void testUpdateArrayStatistics() {
         StringArray array = new StringArray(new String[]{"old"});
 
-        warehouse.handleEvent(array, "ADD");
-        Optional<ArrayStatisticsImpl> firstStats = warehouse.getStatistics(array.getId());
+        arrayWarehouse.handleEvent(array, "ADD");
+        Optional<ArrayStatisticsImpl> firstStats = arrayWarehouse.getStatistics(array.getId());
         assertTrue(firstStats.isPresent());
         assertEquals(3.0, firstStats.get().getAverageLength(), 0.001);
 
-        warehouse.handleEvent(array, "ADD");
-        Optional<ArrayStatisticsImpl> secondStats = warehouse.getStatistics(array.getId());
+        arrayWarehouse.handleEvent(array, "ADD");
+        Optional<ArrayStatisticsImpl> secondStats = arrayWarehouse.getStatistics(array.getId());
         assertTrue(secondStats.isPresent());
 
         assertEquals(firstStats.get().getAverageLength(), secondStats.get().getAverageLength(), 0.001);

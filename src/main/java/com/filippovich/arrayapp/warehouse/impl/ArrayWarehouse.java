@@ -12,19 +12,19 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-public class Warehouse implements Observer {
-    private static final Logger logger = LogManager.getLogger(Warehouse.class);
-    private static Warehouse instance;
+public class ArrayWarehouse implements Observer {
+    private static final Logger logger = LogManager.getLogger(ArrayWarehouse.class);
+    private static ArrayWarehouse instance;
 
     private final Map<UUID, ArrayStatisticsImpl> statisticsMap = new HashMap<>();
 
-    private Warehouse() {
+    private ArrayWarehouse() {
         logger.info("Warehouse Singleton created.");
     }
 
-    public static Warehouse getInstance() {
+    public static ArrayWarehouse getInstance() {
         if (instance == null) {
-            instance = new Warehouse();
+            instance = new ArrayWarehouse();
             StringArrayRepositoryImpl.getInstance().addObserver(instance);
             logger.info("Warehouse instance registered as observer with Repository.");
         }
